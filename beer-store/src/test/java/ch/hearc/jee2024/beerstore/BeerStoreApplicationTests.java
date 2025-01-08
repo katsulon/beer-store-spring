@@ -14,130 +14,111 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc // automatic configuration of the mock
-class BeerStoreTests {
+@AutoConfigureMockMvc
+class BeerStoreApplicationTests {
 
     @Autowired
-    private MockMvc mvc; // object allowing to "simulate" a web server
+    private MockMvc mvc;
+
     @Test
     public void newControllerExist() throws Exception {
         String controllerExpectedFqdn = "ch.hearc.jee2024.beerstore.controllers.BeerController";
 
-        try{
-            Class controller = Class.forName(controllerExpectedFqdn);
+        try {
+            Class<?> controller = Class.forName(controllerExpectedFqdn);
             boolean isAnnotation = controller.isAnnotationPresent(RestController.class);
-            assertTrue(isAnnotation,String.format("Controller %s is not a RestController",controllerExpectedFqdn));
-
-        }catch(ClassNotFoundException ex){
-            fail(String.format("Controller %s doesn't exist",controllerExpectedFqdn));
+            assertTrue(isAnnotation, String.format("Controller %s is not a RestController", controllerExpectedFqdn));
+        } catch (ClassNotFoundException ex) {
+            fail(String.format("Controller %s doesn't exist", controllerExpectedFqdn));
         }
     }
 
     @Test
     public void callBeerShouldCreateBeer() throws Exception {
-        this.mvc.perform(post("/beer") //POST /beer
-                        .contentType("application/json") //Type de contenu
-                        .content("{\"id\":\"1\",\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}")) //Contenu de la requête
-                .andExpect(status().isCreated()) //Status code = 200
-                .andExpect(content().json("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}")); //Réponse attendue
+        this.mvc.perform(post("/beer")
+                        .contentType("application/json")
+                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"))
+                .andExpect(status().isCreated())
+                .andExpect(content().json("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"));
     }
 
     @Test
     public void callBeersShouldReturnBeers() throws Exception {
-        this.mvc.perform(post("/beer") //POST /beer
-                        .contentType("application/json") //Type de contenu
-                        .content("{\"id\":\"1\",\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}")) //Contenu de la requête
-                .andExpect(status().isCreated()) //Status code = 200
-                .andExpect(content().json("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}")); //Réponse attendue
+        this.mvc.perform(post("/beer")
+                        .contentType("application/json")
+                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"))
+                .andExpect(status().isCreated());
 
-        this.mvc.perform(post("/beer") //POST /beer
-                        .contentType("application/json") //Type de contenu
-                        .content("{\"id\":\"2\",\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer 2\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}")) //Contenu de la requête
-                .andExpect(status().isCreated()) //Status code = 200
-                .andExpect(content().json("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer 2\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}")); //Réponse attendue
+        this.mvc.perform(post("/beer")
+                        .contentType("application/json")
+                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer 2\",\"description\":\"A test beer description.\",\"alcohol\":6.0,\"price\":3.0}"))
+                .andExpect(status().isCreated());
 
-        this.mvc.perform(get("/beer")) //GET /beer
-                .andExpect(status().isOk()) //Status code = 200
+        this.mvc.perform(get("/beer"))
+                .andExpect(status().isOk())
                 .andExpect(content().json("[" +
-                        "{" +
-                        "\"id\":1," +
-                        "\"manufacturer\":\"Test Brewery\"," +
-                        "\"name\":\"Test Beer\"," +
-                        "\"description\":\"A test beer description.\"," +
-                        "\"alcohol\":5.0," +
-                        "\"price\":2.5" +
-                        "}," +
-                        "{" +
-                        "\"id\":2," +
-                        "\"manufacturer\":\"Test Brewery\"," +
-                        "\"name\":\"Test Beer 2\"," +
-                        "\"description\":\"A test beer description.\"," +
-                        "\"alcohol\":5.0," +
-                        "\"price\":2.5" +
-                        "}" +
+                        "{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}," +
+                        "{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer 2\",\"description\":\"A test beer description.\",\"alcohol\":6.0,\"price\":3.0}" +
                         "]"));
     }
 
     @Test
     public void callBeerWithIdShouldReturnBeer() throws Exception {
-        this.mvc.perform(post("/beer") //POST /beer
-                        .contentType("application/json") //Type de contenu
-                        .content("{\"id\":\"1\",\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}")) //Contenu de la requête
-                .andExpect(status().isCreated()) //Status code = 200
-                .andExpect(content().json("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}")); //Réponse attendue
+        this.mvc.perform(post("/beer")
+                        .contentType("application/json")
+                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"))
+                .andExpect(status().isCreated());
 
-        this.mvc.perform(get("/beer/1")) //GET /beer/1
-                .andExpect(status().isOk()) //Status code = 200
-                .andExpect(content().json("{\"id\":1,\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}")); //Réponse attendue
+        this.mvc.perform(get("/beer/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"id\":1,\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"));
     }
 
     @Test
     public void callBeerWithIdShouldReturnNotFound() throws Exception {
-        this.mvc.perform(get("/beer/3")) //GET /beer/1
-                .andExpect(status().isNotFound()); //Status code = 404
+        this.mvc.perform(get("/beer/4"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     public void callBeerWithIdShouldUpdateBeer() throws Exception {
-        this.mvc.perform(post("/beer") //POST /beer
-                        .contentType("application/json") //Type de contenu
-                        .content("{\"id\":\"1\",\"manufacturer\":\"Initial Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}")) //Contenu de la requête
-                .andExpect(status().isCreated()) //Status code = 200
-                .andExpect(content().json("{\"manufacturer\":\"Initial Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}")); //Réponse attendue
+        this.mvc.perform(post("/beer")
+                        .contentType("application/json")
+                        .content("{\"manufacturer\":\"Initial Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"))
+                .andExpect(status().isCreated());
 
-        this.mvc.perform(put("/beer/1") //PUT /beer/1
-                        .contentType("application/json") //Type de contenu
-                        .content("{\"id\":\"1\",\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":3.5}")) //Contenu de la requête
-                .andExpect(status().isOk()) //Status code = 200
-                .andExpect(content().json("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":3.5}")); //Réponse attendue
+        this.mvc.perform(put("/beer/1")
+                        .contentType("application/json")
+                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Updated Test Beer\",\"description\":\"Updated description.\",\"alcohol\":6.0,\"price\":3.5}"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"id\":1,\"manufacturer\":\"Test Brewery\",\"name\":\"Updated Test Beer\",\"description\":\"Updated description.\",\"alcohol\":6.0,\"price\":3.5}"));
     }
 
     @Test
     public void callBeerWithIdShouldReturnNotFoundOnUpdate() throws Exception {
-        this.mvc.perform(put("/beer/3") //PUT /beer/3
-                        .contentType("application/json") //Type de contenu
-                        .content("{\"id\":\"3\",\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":3.5}")) //Contenu de la requête
-                .andExpect(status().isNotFound()); //Status code = 404
+        this.mvc.perform(put("/beer/3")
+                        .contentType("application/json")
+                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Non-existent Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":3.5}"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     public void callBeerWithIdShouldDeleteBeer() throws Exception {
-        this.mvc.perform(post("/beer") //POST /beer
-                        .contentType("application/json") //Type de contenu
-                        .content("{\"id\":\"1\",\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}")) //Contenu de la requête
-                .andExpect(status().isCreated()) //Status code = 200
-                .andExpect(content().json("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}")); //Réponse attendue
+        this.mvc.perform(post("/beer")
+                        .contentType("application/json")
+                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"))
+                .andExpect(status().isCreated());
 
-        this.mvc.perform(delete("/beer/1")) //DELETE /beer/1
-                .andExpect(status().isNoContent()); //Status code = 204
+        this.mvc.perform(delete("/beer/1"))
+                .andExpect(status().isNoContent());
 
-        this.mvc.perform(get("/beer/1")) //GET /beer/1
-                .andExpect(status().isNotFound()); //Status code = 404
+        this.mvc.perform(get("/beer/1"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     public void callBeerWithIdShouldReturnNotFoundOnDelete() throws Exception {
-        this.mvc.perform(delete("/beer/3")) //DELETE /beer/3
-                .andExpect(status().isNotFound()); //Status code = 404
+        this.mvc.perform(delete("/beer/3"))
+                .andExpect(status().isNotFound());
     }
 }

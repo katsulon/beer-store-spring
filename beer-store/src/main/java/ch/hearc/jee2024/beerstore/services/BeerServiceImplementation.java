@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Qualifier("beerService")
 @Service
 public class BeerServiceImplementation implements BeerService {
@@ -15,23 +17,17 @@ public class BeerServiceImplementation implements BeerService {
     }
 
     @Override
-    public void create(Beer beer) {
-        beerRepository.create(beer);
-    }
+    public void create(Beer beer) { beerRepository.save(beer); }
 
     @Override
-    public Beer[] list() {
-        return beerRepository.list();
-    }
+    public Iterable<Beer> list() { return beerRepository.findAll(); }
 
     @Override
-    public Beer get(Integer id) {
-        return beerRepository.get(id);
-    }
+    public Optional<Beer> get(Long id) { return beerRepository.findById(id);}
 
     @Override
-    public void delete(Integer id) {
-        beerRepository.delete(id);
+    public void delete(Long id) {
+        beerRepository.deleteById(id);
     }
 
     private final BeerRepository beerRepository;

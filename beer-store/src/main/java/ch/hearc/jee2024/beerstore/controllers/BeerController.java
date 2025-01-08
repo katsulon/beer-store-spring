@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 // Peut-être plutôt utiliser Optional, surtout pour les get id. Aussi list devrait plutôt retourner que certains paramètres de la bière.
 
 @RestController
@@ -27,24 +29,22 @@ public class BeerController {
 
     @GetMapping(value = "/beer")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Beer[] getBeers() {
+    public @ResponseBody Iterable<Beer> getBeers() {
         return beerService.list();
     }
 
     @GetMapping("/beer/{id}")
-    public ResponseEntity<Beer> getBeer(@PathVariable Integer id) {
-        Beer beer = beerService.get(id);
-        if (beer != null) {
-            return ResponseEntity.ok(beer);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Beer> getBeer(@PathVariable Long id) {
+        Optional<Beer> beer = beerService.get(id);
+        return beer.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/beer/{id}")
-    public ResponseEntity<Beer> updateBeer(@PathVariable Integer id, @RequestBody Beer beer) {
-        Beer existingBeer = beerService.get(id);
-        if (existingBeer != null) {
+    public ResponseEntity<Beer> updateBeer(@PathVariable Long id, @RequestBody Beer beer) {
+        Optional<Beer> existingBeer = beerService.get(id);
+        if (existingBeer.isPresent()) {
+            beer.setId(id);
             beerService.create(beer);
             return ResponseEntity.ok(beer);
         } else {
@@ -53,9 +53,9 @@ public class BeerController {
     }
 
     @DeleteMapping("/beer/{id}")
-    public ResponseEntity<Void> deleteBeer(@PathVariable Integer id) {
-        Beer beer = beerService.get(id);
-        if (beer != null) {
+    public ResponseEntity<Void> deleteBeer(@PathVariable Long id) {
+        Optional<Beer> existingBeer = beerService.get(id);
+        if (existingBeer.isPresent()) {
             beerService.delete(id);
             return ResponseEntity.noContent().build();
         } else {
