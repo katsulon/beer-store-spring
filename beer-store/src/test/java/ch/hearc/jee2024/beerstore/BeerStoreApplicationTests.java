@@ -46,11 +46,6 @@ class BeerStoreApplicationTests {
     public void callBeersShouldReturnBeers() throws Exception {
         this.mvc.perform(post("/beer")
                         .contentType("application/json")
-                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"))
-                .andExpect(status().isCreated());
-
-        this.mvc.perform(post("/beer")
-                        .contentType("application/json")
                         .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer 2\",\"description\":\"A test beer description.\",\"alcohol\":6.0,\"price\":3.0}"))
                 .andExpect(status().isCreated());
 
@@ -68,7 +63,6 @@ class BeerStoreApplicationTests {
                         .contentType("application/json")
                         .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"))
                 .andExpect(status().isCreated());
-
         this.mvc.perform(get("/beer/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"id\":1,\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"));
@@ -82,21 +76,16 @@ class BeerStoreApplicationTests {
 
     @Test
     public void callBeerWithIdShouldUpdateBeer() throws Exception {
-        this.mvc.perform(post("/beer")
-                        .contentType("application/json")
-                        .content("{\"manufacturer\":\"Initial Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"))
-                .andExpect(status().isCreated());
-
-        this.mvc.perform(put("/beer/1")
+        this.mvc.perform(put("/beer/2")
                         .contentType("application/json")
                         .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Updated Test Beer\",\"description\":\"Updated description.\",\"alcohol\":6.0,\"price\":3.5}"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":1,\"manufacturer\":\"Test Brewery\",\"name\":\"Updated Test Beer\",\"description\":\"Updated description.\",\"alcohol\":6.0,\"price\":3.5}"));
+                .andExpect(content().json("{\"id\":2,\"manufacturer\":\"Test Brewery\",\"name\":\"Updated Test Beer\",\"description\":\"Updated description.\",\"alcohol\":6.0,\"price\":3.5}"));
     }
 
     @Test
     public void callBeerWithIdShouldReturnNotFoundOnUpdate() throws Exception {
-        this.mvc.perform(put("/beer/3")
+        this.mvc.perform(put("/beer/4")
                         .contentType("application/json")
                         .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Non-existent Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":3.5}"))
                 .andExpect(status().isNotFound());
@@ -104,11 +93,6 @@ class BeerStoreApplicationTests {
 
     @Test
     public void callBeerWithIdShouldDeleteBeer() throws Exception {
-        this.mvc.perform(post("/beer")
-                        .contentType("application/json")
-                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"))
-                .andExpect(status().isCreated());
-
         this.mvc.perform(delete("/beer/1"))
                 .andExpect(status().isNoContent());
 
@@ -118,7 +102,7 @@ class BeerStoreApplicationTests {
 
     @Test
     public void callBeerWithIdShouldReturnNotFoundOnDelete() throws Exception {
-        this.mvc.perform(delete("/beer/3"))
+        this.mvc.perform(delete("/beer/4"))
                 .andExpect(status().isNotFound());
     }
 }
