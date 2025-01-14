@@ -1,12 +1,12 @@
 package ch.hearc.jee2024.beerstore.services;
 
-import ch.hearc.jee2024.beerstore.models.Beer;
+import ch.hearc.jee2024.beerstore.models.BeerEntity;
 
 import java.util.Optional;
 
 public interface BeerService {
-    void create(Beer beer);
-    Iterable<Beer> list();
-    Optional<Beer> get(Long id);
+    void create(BeerEntity beer);
+    Iterable<BeerEntity> list();
+    Optional<BeerEntity> get(Long id);
     void delete(Long id);
 }

@@ -1,6 +1,6 @@
 package ch.hearc.jee2024.beerstore.repositories;
 
-import ch.hearc.jee2024.beerstore.models.Beer;
+import ch.hearc.jee2024.beerstore.models.BeerEntity;
 import org.springframework.data.repository.CrudRepository;
 
-public interface BeerRepository extends CrudRepository<Beer, Long> { }
+public interface BeerRepository extends CrudRepository<BeerEntity, Long> { }

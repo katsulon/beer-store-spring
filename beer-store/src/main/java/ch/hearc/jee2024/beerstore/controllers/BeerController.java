@@ -1,7 +1,9 @@
 package ch.hearc.jee2024.beerstore.controllers;
 
-import ch.hearc.jee2024.beerstore.models.Beer;
+import ch.hearc.jee2024.beerstore.models.BeerEntity;
+import ch.hearc.jee2024.beerstore.models.ManufacturerEntity;
 import ch.hearc.jee2024.beerstore.services.BeerService;
+import ch.hearc.jee2024.beerstore.services.ManufacturerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,35 +16,48 @@ import java.util.Optional;
 @RestController
 public class BeerController {
     private final BeerService beerService;
+    private final ManufacturerService manufacturerService;
 
     @Autowired
-    public BeerController(BeerService beerService) {
+    public BeerController(BeerService beerService, ManufacturerService manufacturerService) {
         this.beerService = beerService;
+        this.manufacturerService = manufacturerService;
     }
 
     @PostMapping(value = "/beer")
     @ResponseStatus(HttpStatus.CREATED)
-    public Beer createBeer(@RequestBody Beer beer) {
+    public BeerEntity createBeer(@RequestBody BeerEntity beer) {
+        if (beer.getManufacturer() == null || beer.getManufacturer().getId() == null) {
+            throw new IllegalArgumentException("Manufacturer ID is required");
+        }
+
+        Optional<ManufacturerEntity> manufacturer = manufacturerService.get(beer.getManufacturer().getId());
+        if (manufacturer.isEmpty()) {
+            throw new IllegalArgumentException("Manufacturer not found");
+        }
+
+        beer.setManufacturer(manufacturer.get());
         beerService.create(beer);
         return beer;
     }
 
+
     @GetMapping(value = "/beer")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Iterable<Beer> getBeers() {
+    public @ResponseBody Iterable<BeerEntity> getBeers() {
         return beerService.list();
     }
 
     @GetMapping("/beer/{id}")
-    public ResponseEntity<Beer> getBeer(@PathVariable Long id) {
-        Optional<Beer> beer = beerService.get(id);
+    public ResponseEntity<BeerEntity> getBeer(@PathVariable Long id) {
+        Optional<BeerEntity> beer = beerService.get(id);
         return beer.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/beer/{id}")
-    public ResponseEntity<Beer> updateBeer(@PathVariable Long id, @RequestBody Beer beer) {
-        Optional<Beer> existingBeer = beerService.get(id);
+    public ResponseEntity<BeerEntity> updateBeer(@PathVariable Long id, @RequestBody BeerEntity beer) {
+        Optional<BeerEntity> existingBeer = beerService.get(id);
         if (existingBeer.isPresent()) {
             beer.setId(id);
             beerService.create(beer);
@@ -54,7 +69,7 @@ public class BeerController {
 
     @DeleteMapping("/beer/{id}")
     public ResponseEntity<Void> deleteBeer(@PathVariable Long id) {
-        Optional<Beer> existingBeer = beerService.get(id);
+        Optional<BeerEntity> existingBeer = beerService.get(id);
         if (existingBeer.isPresent()) {
             beerService.delete(id);
             return ResponseEntity.noContent().build();

@@ -1,25 +1,28 @@
 package ch.hearc.jee2024.beerstore.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-
-import javax.annotation.processing.Generated;
 
 @Entity
 @Table(name = "beers")
-public class Beer {
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class BeerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String manufacturer;
+    @ManyToOne
+    @JoinColumn(name = "manufacturer_id")
+    private ManufacturerEntity manufacturer;
     private String name;
     private String description;
     private double alcohol;
     private double price;
 
-    public Beer() { }
+    public BeerEntity() { }
 
-    public Beer(String manufacturer, String name, String description, double alcohol, double price) {
+    public BeerEntity(ManufacturerEntity manufacturer, String name, String description, double alcohol, double price) {
         this.manufacturer = manufacturer;
         this.name = name;
         this.description = description;
@@ -29,10 +32,6 @@ public class Beer {
 
     public Long getId() {
         return id;
-    }
-
-    public String getManufacturer() {
-        return manufacturer;
     }
 
     public String getName() {
@@ -51,12 +50,12 @@ public class Beer {
         return price;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public ManufacturerEntity getManufacturer() {
+        return manufacturer;
     }
 
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setName(String name) {
@@ -75,11 +74,15 @@ public class Beer {
         this.price = price;
     }
 
+    public void setManufacturer(ManufacturerEntity manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
     @Override
     public String toString() {
         return "Beer{" +
                 "id=" + id +
-                ", manufacturer='" + manufacturer + '\'' +
+                ", manufacturer='" + (manufacturer != null ? manufacturer.getName() : "null") + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", alcohol=" + alcohol +
