@@ -1,6 +1,7 @@
 package ch.hearc.jee2024.beerstore.models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
@@ -9,7 +10,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "manufacturers")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ManufacturerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +18,7 @@ public class ManufacturerEntity {
     private String name;
     private String country;
     @OneToMany(mappedBy = "manufacturer")
+    @JsonIgnore
     List<BeerEntity> beers = new ArrayList<>();
 
     public ManufacturerEntity() { }
