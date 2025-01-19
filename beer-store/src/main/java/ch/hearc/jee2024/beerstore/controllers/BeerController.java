@@ -26,21 +26,18 @@ public class BeerController {
 
     @PostMapping(value = "/beer")
     @ResponseStatus(HttpStatus.CREATED)
-    public BeerEntity createBeer(@RequestBody BeerEntity beer) {
-        if (beer.getManufacturer() == null || beer.getManufacturer().getId() == null) {
-            throw new IllegalArgumentException("Manufacturer ID is required");
+    public ResponseEntity<BeerEntity> createBeer(@RequestBody BeerEntity beer) {
+        try {
+            if (beer.getManufacturer() != null && beer.getManufacturer().getId() != null) {
+                Optional<ManufacturerEntity> manufacturer = manufacturerService.get(beer.getManufacturer().getId());
+                manufacturer.ifPresent(beer::setManufacturer);
+            }
+            beerService.create(beer);
+            return ResponseEntity.ok(beer);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
         }
-
-        Optional<ManufacturerEntity> manufacturer = manufacturerService.get(beer.getManufacturer().getId());
-        if (manufacturer.isEmpty()) {
-            throw new IllegalArgumentException("Manufacturer not found");
-        }
-
-        beer.setManufacturer(manufacturer.get());
-        beerService.create(beer);
-        return beer;
     }
-
 
     @GetMapping(value = "/beer")
     @ResponseStatus(HttpStatus.OK)
@@ -59,9 +56,13 @@ public class BeerController {
     public ResponseEntity<BeerEntity> updateBeer(@PathVariable Long id, @RequestBody BeerEntity beer) {
         Optional<BeerEntity> existingBeer = beerService.get(id);
         if (existingBeer.isPresent()) {
-            beer.setId(id);
-            beerService.create(beer);
-            return ResponseEntity.ok(beer);
+            try {
+                beer.setId(id);
+                beerService.create(beer);
+                return ResponseEntity.ok(beer);
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().build();
+            }
         } else {
             return ResponseEntity.notFound().build();
         }

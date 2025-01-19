@@ -17,7 +17,15 @@ public class BeerServiceImplementation implements BeerService {
     }
 
     @Override
-    public void create(BeerEntity beer) { beerRepository.save(beer); }
+    public void create(BeerEntity beer) {
+        if (beer.getStock() >= 0) {
+            beerRepository.save(beer);
+        } else {
+            String message = "Stock cannot be negative";
+            System.out.println(message);
+            throw new IllegalArgumentException(message);
+        }
+    }
 
     @Override
     public Iterable<BeerEntity> list() { return beerRepository.findAll(); }

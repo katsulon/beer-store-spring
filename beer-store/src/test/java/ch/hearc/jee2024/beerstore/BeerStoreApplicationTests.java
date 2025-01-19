@@ -37,35 +37,41 @@ class BeerStoreApplicationTests {
     public void callBeerShouldCreateBeer() throws Exception {
         this.mvc.perform(post("/beer")
                         .contentType("application/json")
-                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"))
+                        .content("{\"manufacturer\":{\"id\": 1},\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"))
                 .andExpect(status().isCreated())
-                .andExpect(content().json("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"));
+                .andExpect(content().json("{\"manufacturer\":{\"name\":\"Test Brewery\",\"country\":\"Test country\"},\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"));
     }
 
     @Test
     public void callBeersShouldReturnBeers() throws Exception {
         this.mvc.perform(post("/beer")
                         .contentType("application/json")
-                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer 2\",\"description\":\"A test beer description.\",\"alcohol\":6.0,\"price\":3.0}"))
+                        .content("{\"manufacturer\":{\"id\": 1},\"name\":\"Test Beer 2\",\"description\":\"A test beer description.\",\"alcohol\":6.0,\"price\":3.0}"))
                 .andExpect(status().isCreated());
 
         this.mvc.perform(get("/beer"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[" +
-                        "{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}," +
-                        "{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer 2\",\"description\":\"A test beer description.\",\"alcohol\":6.0,\"price\":3.0}" +
+                        "{\"manufacturer\":{\"name\":\"Test Brewery\",\"country\":\"Test country\"},\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}," +
+                        "{\"manufacturer\":{\"name\":\"Test Brewery\",\"country\":\"Test country\"},\"name\":\"Test Beer 2\",\"description\":\"A test beer description.\",\"alcohol\":6.0,\"price\":3.0}" +
                         "]"));
     }
 
     @Test
     public void callBeerWithIdShouldReturnBeer() throws Exception {
+        this.mvc.perform(post("/manufacturer")
+                        .contentType("application/json")
+                        .content("{\"name\":\"Test Brewery\",\"country\":\"Test country\"}"))
+                .andExpect(status().isCreated());
+
         this.mvc.perform(post("/beer")
                         .contentType("application/json")
-                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"))
+                        .content("{\"manufacturer\":{\"id\": 1},\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"))
                 .andExpect(status().isCreated());
+
         this.mvc.perform(get("/beer/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":1,\"manufacturer\":\"Test Brewery\",\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"));
+                .andExpect(content().json("{\"manufacturer\":{\"name\":\"Test Brewery\",\"country\":\"Test country\"},\"name\":\"Test Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":2.5}"));
     }
 
     @Test
@@ -78,16 +84,16 @@ class BeerStoreApplicationTests {
     public void callBeerWithIdShouldUpdateBeer() throws Exception {
         this.mvc.perform(put("/beer/2")
                         .contentType("application/json")
-                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Updated Test Beer\",\"description\":\"Updated description.\",\"alcohol\":6.0,\"price\":3.5}"))
+                        .content("{\"manufacturer\":{\"id\": 1},\"name\":\"Updated Test Beer\",\"description\":\"Updated description.\",\"alcohol\":6.0,\"price\":3.5}"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":2,\"manufacturer\":\"Test Brewery\",\"name\":\"Updated Test Beer\",\"description\":\"Updated description.\",\"alcohol\":6.0,\"price\":3.5}"));
+                .andExpect(content().json("{\"manufacturer\":{\"name\":null,\"country\":null},\"name\":\"Updated Test Beer\",\"description\":\"Updated description.\",\"alcohol\":6.0,\"price\":3.5}"));
     }
 
     @Test
     public void callBeerWithIdShouldReturnNotFoundOnUpdate() throws Exception {
         this.mvc.perform(put("/beer/4")
                         .contentType("application/json")
-                        .content("{\"manufacturer\":\"Test Brewery\",\"name\":\"Non-existent Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":3.5}"))
+                        .content("{\"manufacturer\":{\"id\": 1},\"name\":\"Non-existent Beer\",\"description\":\"A test beer description.\",\"alcohol\":5.0,\"price\":3.5}"))
                 .andExpect(status().isNotFound());
     }
 

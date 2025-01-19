@@ -13,21 +13,23 @@ public class BeerEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "manufacturer_id")
+    @JoinColumn(name = "manufacturer_id", nullable = false)
     private ManufacturerEntity manufacturer;
     private String name;
     private String description;
     private double alcohol;
     private double price;
+    private int stock;
 
     public BeerEntity() { }
 
-    public BeerEntity(ManufacturerEntity manufacturer, String name, String description, double alcohol, double price) {
+    public BeerEntity(ManufacturerEntity manufacturer, String name, String description, double alcohol, double price, int stock) {
         this.manufacturer = manufacturer;
         this.name = name;
         this.description = description;
         this.alcohol = alcohol;
         this.price = price;
+        this.stock = stock;
     }
 
     public Long getId() {
@@ -48,6 +50,10 @@ public class BeerEntity {
 
     public double getPrice() {
         return price;
+    }
+
+    public int getStock() {
+        return stock;
     }
 
     public ManufacturerEntity getManufacturer() {
@@ -74,6 +80,10 @@ public class BeerEntity {
         this.price = price;
     }
 
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
     public void setManufacturer(ManufacturerEntity manufacturer) {
         this.manufacturer = manufacturer;
     }
@@ -87,6 +97,7 @@ public class BeerEntity {
                 ", description='" + description + '\'' +
                 ", alcohol=" + alcohol +
                 ", price=" + price +
+                ", stock=" + stock +
                 '}';
     }
 }
