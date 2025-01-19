@@ -2,6 +2,7 @@ package ch.hearc.jee2024.beerstore.models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
@@ -18,7 +19,7 @@ public class ManufacturerEntity {
     private String name;
     private String country;
     @OneToMany(mappedBy = "manufacturer")
-    @JsonIgnore
+    @JsonIncludeProperties(value = {"id"})
     List<BeerEntity> beers = new ArrayList<>();
 
     public ManufacturerEntity() { }
@@ -27,6 +28,8 @@ public class ManufacturerEntity {
         this.name = name;
         this.country = country;
     }
+
+    // Getters, setters
 
     public Long getId() {
         return id;
@@ -40,9 +43,7 @@ public class ManufacturerEntity {
         return country;
     }
 
-    public List<BeerEntity> getBeers() {
-        return beers;
-    }
+    public List<BeerEntity> getBeers() { return beers; }
 
     public void setId(Long id) {
         this.id = id;

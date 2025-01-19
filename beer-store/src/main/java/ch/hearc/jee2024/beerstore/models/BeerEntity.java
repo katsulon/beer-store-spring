@@ -1,12 +1,16 @@
 package ch.hearc.jee2024.beerstore.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "beers")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class BeerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,6 +18,7 @@ public class BeerEntity {
 
     @ManyToOne
     @JoinColumn(name = "manufacturer_id", nullable = false)
+    @JsonIncludeProperties(value = {"id"})
     private ManufacturerEntity manufacturer;
     private String name;
     private String description;
@@ -52,9 +57,7 @@ public class BeerEntity {
         return price;
     }
 
-    public int getStock() {
-        return stock;
-    }
+    public int getStock() { return stock; }
 
     public ManufacturerEntity getManufacturer() {
         return manufacturer;
@@ -80,9 +83,7 @@ public class BeerEntity {
         this.price = price;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
+    public void setStock(int stock) { this.stock = stock; }
 
     public void setManufacturer(ManufacturerEntity manufacturer) {
         this.manufacturer = manufacturer;
