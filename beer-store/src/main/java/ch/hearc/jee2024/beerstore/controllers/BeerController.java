@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-// Peut-être plutôt utiliser Optional, surtout pour les get id. Aussi list devrait plutôt retourner que certains paramètres de la bière.
-
 @RestController
 public class BeerController {
     private final BeerService beerService;
@@ -24,7 +22,7 @@ public class BeerController {
         this.manufacturerService = manufacturerService;
     }
 
-    @PostMapping(value = "/beer")
+    @PostMapping("/beer")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<BeerEntity> createBeer(@RequestBody BeerEntity beer) {
         try {
@@ -39,7 +37,7 @@ public class BeerController {
         }
     }
 
-    @GetMapping(value = "/beer")
+    @GetMapping("/beer")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody Iterable<BeerEntity> getBeers() {
         return beerService.list();
