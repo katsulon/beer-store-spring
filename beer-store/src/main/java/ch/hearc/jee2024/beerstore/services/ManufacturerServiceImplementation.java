@@ -4,6 +4,8 @@ import ch.hearc.jee2024.beerstore.models.ManufacturerEntity;
 import ch.hearc.jee2024.beerstore.repositories.ManufacturerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,7 +22,7 @@ public class ManufacturerServiceImplementation implements ManufacturerService {
     public void create(ManufacturerEntity manufacturer) { manufacturerRepository.save(manufacturer); }
 
     @Override
-    public Iterable<ManufacturerEntity> list() { return manufacturerRepository.findAll(); }
+    public Page<ManufacturerEntity> list(Pageable pageable) { return manufacturerRepository.findAll(pageable); }
 
     @Override
     public Optional<ManufacturerEntity> get(Long id) { return manufacturerRepository.findById(id);}

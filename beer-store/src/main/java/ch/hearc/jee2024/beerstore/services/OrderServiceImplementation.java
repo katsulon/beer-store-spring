@@ -4,6 +4,8 @@ import ch.hearc.jee2024.beerstore.models.OrderEntity;
 import ch.hearc.jee2024.beerstore.repositories.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,7 +22,7 @@ public class OrderServiceImplementation implements OrderService {
     public void create(OrderEntity order) { orderRepository.save(order); }
 
     @Override
-    public Iterable<OrderEntity> list() { return orderRepository.findAll(); }
+    public Page<OrderEntity> list(Pageable pageable) { return orderRepository.findAll(pageable); }
 
     @Override
     public Optional<OrderEntity> get(Long id)  { return orderRepository.findById(id); }

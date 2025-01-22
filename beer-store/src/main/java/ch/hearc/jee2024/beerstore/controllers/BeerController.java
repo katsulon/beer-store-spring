@@ -5,10 +5,14 @@ import ch.hearc.jee2024.beerstore.models.ManufacturerEntity;
 import ch.hearc.jee2024.beerstore.services.BeerService;
 import ch.hearc.jee2024.beerstore.services.ManufacturerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -39,8 +43,17 @@ public class BeerController {
 
     @GetMapping("/beer")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Iterable<BeerEntity> getBeers() {
-        return beerService.list();
+    public @ResponseBody List<BeerEntity> getBeers(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        int defaultPageOne = page - 1;
+        if (defaultPageOne < 0) {
+            defaultPageOne = 0;
+        }
+        Pageable pageable = PageRequest.of(defaultPageOne, size);
+        Page<BeerEntity> beerPage = beerService.list(pageable);
+        return beerPage.getContent();
     }
 
     @GetMapping("/beer/{id}")

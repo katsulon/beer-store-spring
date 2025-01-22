@@ -4,6 +4,8 @@ import ch.hearc.jee2024.beerstore.repositories.BeerRepository;
 import ch.hearc.jee2024.beerstore.models.BeerEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,7 +30,7 @@ public class BeerServiceImplementation implements BeerService {
     }
 
     @Override
-    public Iterable<BeerEntity> list() { return beerRepository.findAll(); }
+    public Page<BeerEntity> list(Pageable pageable) { return beerRepository.findAll(pageable); }
 
     @Override
     public Optional<BeerEntity> get(Long id) { return beerRepository.findById(id);}
