@@ -1,6 +1,6 @@
-package ch.hearc.jee2024.beerstore.models;
+package ch.hearc.jee2024.beerstore.models.orders;
 
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import ch.hearc.jee2024.beerstore.models.BeerEntity;
 import jakarta.persistence.*;
 
 import java.util.*;

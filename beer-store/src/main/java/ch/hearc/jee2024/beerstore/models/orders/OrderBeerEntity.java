@@ -1,9 +1,8 @@
-package ch.hearc.jee2024.beerstore.models;
+package ch.hearc.jee2024.beerstore.models.orders;
 
+import ch.hearc.jee2024.beerstore.models.BeerEntity;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
-
-import java.io.Serializable;
 
 @Entity
 @Table(name = "orders_beers")

@@ -1,6 +1,6 @@
 package ch.hearc.jee2024.beerstore.repositories;
 
-import ch.hearc.jee2024.beerstore.models.OrderEntity;
+import ch.hearc.jee2024.beerstore.models.orders.OrderEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

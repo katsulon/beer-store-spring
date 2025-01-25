@@ -1,4 +1,4 @@
-package ch.hearc.jee2024.beerstore.models;
+package ch.hearc.jee2024.beerstore.models.orders;
 
 import jakarta.persistence.Embeddable;
 

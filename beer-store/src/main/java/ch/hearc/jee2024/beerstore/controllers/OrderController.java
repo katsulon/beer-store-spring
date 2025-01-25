@@ -1,9 +1,8 @@
 package ch.hearc.jee2024.beerstore.controllers;
 
 import ch.hearc.jee2024.beerstore.models.BeerEntity;
-import ch.hearc.jee2024.beerstore.models.ManufacturerEntity;
-import ch.hearc.jee2024.beerstore.models.OrderBeerEntity;
-import ch.hearc.jee2024.beerstore.models.OrderEntity;
+import ch.hearc.jee2024.beerstore.models.orders.OrderBeerEntity;
+import ch.hearc.jee2024.beerstore.models.orders.OrderEntity;
 import ch.hearc.jee2024.beerstore.services.BeerService;
 import ch.hearc.jee2024.beerstore.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;

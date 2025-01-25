@@ -1,6 +1,6 @@
 package ch.hearc.jee2024.beerstore.services;
 
-import ch.hearc.jee2024.beerstore.models.OrderEntity;
+import ch.hearc.jee2024.beerstore.models.orders.OrderEntity;
 import ch.hearc.jee2024.beerstore.repositories.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
