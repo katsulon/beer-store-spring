@@ -65,7 +65,7 @@ public class OrderController {
         order.calculateTotalPrice();
         orderService.create(order);
 
-        return ResponseEntity.ok(order);
+        return ResponseEntity.created(null).body(order);
     }
 
 
@@ -86,6 +86,9 @@ public class OrderController {
     @GetMapping("/order/{id}")
     public ResponseEntity<OrderEntity> getOrder(@PathVariable Long id, @AuthenticationPrincipal UserDetails currentUser) {
         Optional<OrderEntity> order = orderService.get(id);
+        if (order.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
         if (order.isPresent()
                 && order.get().getUser().getUsername().equals(currentUser.getUsername())
                 || currentUser.getUsername().equals("admin")) {
@@ -145,13 +148,18 @@ public class OrderController {
     @DeleteMapping("/order/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long id, @AuthenticationPrincipal UserDetails currentUser) {
         Optional<OrderEntity> existingOrder = orderService.get(id);
-        if (existingOrder.isPresent()
-                && existingOrder.get().getUser().getUsername().equals(currentUser.getUsername())
+
+        if (existingOrder.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (existingOrder.get().getUser().getUsername().equals(currentUser.getUsername())
                 || currentUser.getUsername().equals("admin")) {
             orderService.delete(id);
             return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(403).build(); // Forbidden
         }
     }
+
 }

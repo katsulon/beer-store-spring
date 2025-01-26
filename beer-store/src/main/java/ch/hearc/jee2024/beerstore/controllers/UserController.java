@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +41,9 @@ public class UserController {
     @GetMapping("/user/{id}")
     public ResponseEntity<UserEntity> getUser(@PathVariable Long id, @AuthenticationPrincipal UserDetails currentUser) {
         UserEntity user = userService.get(id).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
         if(!user.getUsername().equals(currentUser.getUsername()) && !currentUser.getUsername().equals("admin")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -50,14 +52,17 @@ public class UserController {
 
     @PostMapping(value = "/user")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity user) {
+    public UserEntity createUser(@RequestBody UserEntity user) {
         userService.create(user);
-        return ResponseEntity.ok(user);
+        return user;
     }
 
     @PutMapping("/user/{id}")
     public ResponseEntity<UserEntity> updateUser(@PathVariable Long id, @RequestBody UserEntity user, @AuthenticationPrincipal UserDetails currentUser) {
         UserEntity existingUser = userService.get(id).orElse(null);
+        if (existingUser == null) {
+            return ResponseEntity.notFound().build();
+        }
         if(!existingUser.getUsername().equals(currentUser.getUsername()) && !currentUser.getUsername().equals("admin")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -69,6 +74,9 @@ public class UserController {
     @DeleteMapping("/user/{id}")
     public ResponseEntity<UserEntity> deleteUser(@PathVariable Long id, @AuthenticationPrincipal UserDetails currentUser) {
         UserEntity user = userService.get(id).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
         if(!user.getUsername().equals(currentUser.getUsername()) && !currentUser.getUsername().equals("admin")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

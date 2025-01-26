@@ -22,6 +22,13 @@ public class OrderBeerEntity {
 
     private int quantity;
 
+    public OrderBeerEntity() {}
+
+    public OrderBeerEntity(BeerEntity beer, int quantity) {
+        this.beer = beer;
+        this.quantity = quantity;
+    }
+
     // Getters and setters
     public OrderEntity getOrder() {
         return order;

@@ -28,17 +28,13 @@ public class BeerController {
 
     @PostMapping("/beer")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<BeerEntity> createBeer(@RequestBody BeerEntity beer) {
-        try {
-            if (beer.getManufacturer() != null && beer.getManufacturer().getId() != null) {
-                Optional<ManufacturerEntity> manufacturer = manufacturerService.get(beer.getManufacturer().getId());
-                manufacturer.ifPresent(beer::setManufacturer);
-            }
-            beerService.create(beer);
-            return ResponseEntity.ok(beer);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+    public BeerEntity createBeer(@RequestBody BeerEntity beer) {
+        if (beer.getManufacturer() != null && beer.getManufacturer().getId() != null) {
+            Optional<ManufacturerEntity> manufacturer = manufacturerService.get(beer.getManufacturer().getId());
+            manufacturer.ifPresent(beer::setManufacturer);
         }
+        beerService.create(beer);
+        return beer;
     }
 
     @GetMapping("/beer")
