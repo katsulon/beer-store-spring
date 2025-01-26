@@ -4,4 +4,8 @@ import ch.hearc.jee2024.beerstore.models.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface UserRepository extends CrudRepository<UserEntity, Long>, PagingAndSortingRepository<UserEntity, Long> { }
+import java.util.Optional;
+
+public interface UserRepository extends CrudRepository<UserEntity, Long>, PagingAndSortingRepository<UserEntity, Long> {
+    Optional<Object> findByUsername(String username); // For Spring Security
+}

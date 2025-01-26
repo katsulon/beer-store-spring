@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -16,12 +18,16 @@ import java.util.Optional;
 @Service
 public class UserServiceImplementation implements UserService {
     @Autowired
-    public UserServiceImplementation(UserRepository userRepository) { this.userRepository = userRepository;}
+    public UserServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public void create(UserEntity user) {
-        /*Map encoders = new HashMap<>();
-        encoders.put("sha256", new StandardPasswordEncoder());*/
+        String password = user.getPassword();
+        String hashedPassword = passwordEncoder.encode(password);
+        user.setPassword(hashedPassword);
         userRepository.save(user);
     }
 
@@ -35,4 +41,5 @@ public class UserServiceImplementation implements UserService {
     public void delete(Long id) { userRepository.deleteById(id); }
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 }

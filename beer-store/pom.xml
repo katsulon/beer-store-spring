@@ -46,6 +46,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- dépendances Spring Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
         <!-- dépendances starter pour jpa -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
