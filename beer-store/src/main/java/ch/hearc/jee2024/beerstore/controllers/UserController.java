@@ -1,6 +1,5 @@
 package ch.hearc.jee2024.beerstore.controllers;
 
-import ch.hearc.jee2024.beerstore.models.ManufacturerEntity;
 import ch.hearc.jee2024.beerstore.models.UserEntity;
 import ch.hearc.jee2024.beerstore.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,10 +40,12 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<UserEntity> getUser(@PathVariable Long id) {
-        return userService.get(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<UserEntity> getUser(@PathVariable Long id, @AuthenticationPrincipal UserDetails currentUser) {
+        UserEntity user = userService.get(id).orElse(null);
+        if(!user.getUsername().equals(currentUser.getUsername()) && !currentUser.getUsername().equals("admin")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping(value = "/user")
@@ -52,18 +56,22 @@ public class UserController {
     }
 
     @PutMapping("/user/{id}")
-    public ResponseEntity<UserEntity> updateUser(@PathVariable Long id, @RequestBody UserEntity user) {
-        return userService.get(id)
-                .map(existingUser -> {
-                    user.setId(id);
-                    userService.create(user);
-                    return ResponseEntity.ok(user);
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<UserEntity> updateUser(@PathVariable Long id, @RequestBody UserEntity user, @AuthenticationPrincipal UserDetails currentUser) {
+        UserEntity existingUser = userService.get(id).orElse(null);
+        if(!existingUser.getUsername().equals(currentUser.getUsername()) && !currentUser.getUsername().equals("admin")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        user.setId(id);
+        userService.create(user);
+        return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<UserEntity> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<UserEntity> deleteUser(@PathVariable Long id, @AuthenticationPrincipal UserDetails currentUser) {
+        UserEntity user = userService.get(id).orElse(null);
+        if(!user.getUsername().equals(currentUser.getUsername()) && !currentUser.getUsername().equals("admin")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
