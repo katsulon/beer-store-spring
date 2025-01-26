@@ -3,6 +3,8 @@
 ## Description
 Backend de magasin de bières implémenté en Spring Boot dans le cadre du cours 3291.2 JEE/Spring I.
 
+Des collections Postman ont été incluses pour faciliter le test des routes.
+
 ## Cachier des charges
 ### Fonctionnalités
 * En tant qu'**utilisateur** je veux pouvoir consulter le catalogue des bières, leurs prix et les stock restants
