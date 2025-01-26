@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,9 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public Optional<UserEntity> get(Long id) { return userRepository.findById(id); }
+
+    @Override
+    public Optional<UserEntity> findByUsername(String username) { return userRepository.findByUsername(username);}
 
     @Override
     public void delete(Long id) { userRepository.deleteById(id); }

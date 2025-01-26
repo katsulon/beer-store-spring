@@ -1,6 +1,8 @@
 package ch.hearc.jee2024.beerstore.models.orders;
 
 import ch.hearc.jee2024.beerstore.models.BeerEntity;
+import ch.hearc.jee2024.beerstore.models.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -14,6 +16,11 @@ public class OrderEntity {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderBeerEntity> orderBeers = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIncludeProperties(value = {"id"})
+    private UserEntity user;
 
     private double totalPrice;
 
@@ -30,12 +37,20 @@ public class OrderEntity {
         return id;
     }
 
+    public UserEntity getUser() {
+        return user;
+    }
+
     public double getTotalPrice() {
         return totalPrice;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     public void setTotalPrice(double totalPrice) {

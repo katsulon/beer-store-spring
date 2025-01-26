@@ -25,11 +25,12 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PathRequest.toH2Console()).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/manufacturer", "/beer").permitAll()
+                        .requestMatchers("/h2/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/manufacturer/**", "/beer/**").permitAll()
                         .requestMatchers("/user/**").permitAll()
-                        .requestMatchers("/order/**").hasRole("USER")
-                        .requestMatchers("/beer/**", "manufacturer/**").hasRole("ADMIN")
+                        .requestMatchers("/order/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/beer/**", "manufacturer/**", "/order/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)

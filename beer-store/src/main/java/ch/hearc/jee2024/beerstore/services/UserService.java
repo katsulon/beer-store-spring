@@ -11,5 +11,6 @@ public interface UserService {
     Page<UserEntity> list(Pageable pageable);
 
     Optional<UserEntity> get(Long id);
+    Optional<UserEntity> findByUsername(String username);
     void delete(Long id);
 }

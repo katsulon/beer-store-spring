@@ -1,12 +1,16 @@
 package ch.hearc.jee2024.beerstore.models;
 
+import ch.hearc.jee2024.beerstore.models.orders.OrderEntity;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -19,6 +23,10 @@ public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIncludeProperties(value = {"id"})
+    private Set<OrderEntity> orders = new HashSet<>();
 
     private String username;
     private String password;
@@ -38,6 +46,10 @@ public class UserEntity implements UserDetails {
 
     public long getId() {
         return id;
+    }
+
+    public Set<OrderEntity> getOrders() {
+        return orders;
     }
 
     @Override
@@ -81,6 +93,10 @@ public class UserEntity implements UserDetails {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public void setOrders(Set<OrderEntity> orders) {
+        this.orders = orders;
     }
 
     public void setUsername(String username) {
